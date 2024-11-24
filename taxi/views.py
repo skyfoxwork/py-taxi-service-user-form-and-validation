@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -108,8 +108,8 @@ class DriverLicenseUpdateView(LoginRequiredMixin, generic.UpdateView):
 @login_required
 def assign_me_car(request, pk):
     if request.method == "POST":
-        driver = Driver.objects.get(id=request.user.id)
-        car = Car.objects.get(id=pk)
+        driver = get_object_or_404(Driver, pk=request.user.id)
+        car = get_object_or_404(Car, pk=pk)
         car.drivers.add(driver)
 
     return redirect("taxi:car-detail", pk=pk)
@@ -118,8 +118,8 @@ def assign_me_car(request, pk):
 @login_required
 def delete_me_car(request, pk):
     if request.method == "POST":
-        driver = Driver.objects.get(id=request.user.id)
-        car = Car.objects.get(id=pk)
+        driver = get_object_or_404(Driver, pk=request.user.id)
+        car = get_object_or_404(Car, pk=pk)
         car.drivers.remove(driver)
 
     return redirect("taxi:car-detail", pk=pk)
